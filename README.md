@@ -1,1 +1,3 @@
 # VeikkausTekninen
+
+Veikkauksen kooditehtävä
