@@ -27,7 +27,7 @@ class GameAccountDSL() {
         createPlayerAccount("333RRR", "Kari", 10000)
     }
 
-    private fun createPlayerAccount(playerId:String, playerName:String, initialBalance:Int){
+    public fun createPlayerAccount(playerId:String, playerName:String, initialBalance:Int){
         transaction {
             PlayerAccount.insert {
                 it[id] = playerId
