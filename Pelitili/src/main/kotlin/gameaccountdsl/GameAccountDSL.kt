@@ -12,19 +12,12 @@ class GameAccountDSL() {
     init{
         Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver", user = "root", password = "")
         initTables()
-        initInitialPlayerAccounts()
     }
 
     private fun initTables(){
         transaction {
             SchemaUtils.create (PlayerAccount, GameEvent)
         }
-    }
-
-    private fun initInitialPlayerAccounts(){
-        createPlayerAccount("11qqq", "Pekka", 2000)
-        createPlayerAccount("222EEE", "Jussi", 5000)
-        createPlayerAccount("333RRR", "Kari", 10000)
     }
 
     public fun createPlayerAccount(playerId:String, playerName:String, initialBalance:Int){
