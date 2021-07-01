@@ -21,11 +21,13 @@ class GameAccountDSL() {
     }
 
     public fun createPlayerAccount(playerId:String, playerName:String, initialBalance:Int){
-        transaction {
-            PlayerAccount.insert {
-                it[id] = playerId
-                it[name] = playerName
-                it[accountBalance] = initialBalance
+        if(!playerAccountExists(playerId)){
+            transaction {
+                PlayerAccount.insert {
+                    it[id] = playerId
+                    it[name] = playerName
+                    it[accountBalance] = initialBalance
+                }
             }
         }
     }
