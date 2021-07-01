@@ -68,18 +68,15 @@ class GameAccountDSL() {
     }
 
     private fun getPlayerAccountBalance(playerId: String): Int {
-        if(playerAccountExists(playerId)){
             return transaction {
                 PlayerAccount.select {PlayerAccount.id eq playerId}.single()[PlayerAccount.accountBalance]
             }
-        }
-        throw Exception("Player with this id does not exist")
     }
 
-    fun chargePlayerAccount(gameEventId:String, playerId: String, amount:Int): Int{
-        if(gameEventExists(gameEventId)) throw Exception("Event with same id already exists")
-        if(!playerAccountExists(playerId)) throw Exception("Player with this id does not exist")
-        if(getPlayerAccountBalance(playerId) < amount) throw Exception("Account does not have enough balance to complete transaction")
+    fun chargePlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
+        if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error("Event with same id already exists")
+        if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error("Player with this id does not exist")
+        if(getPlayerAccountBalance(playerId) < amount) return AccountBalanceResponse.Error("Account does not have enough balance to complete transaction")
 
         val currentBalance = getPlayerAccountBalance(playerId)
         val newBalance = currentBalance - amount
@@ -88,12 +85,12 @@ class GameAccountDSL() {
         createGameEvent(gameEventId, playerId, timeStamp, "charge", amount)
         updatePlayerAccountBalance(playerId, newBalance)
 
-        return newBalance
+        return AccountBalanceResponse.Success(newBalance)
     }
 
-    fun depositPlayerAccount(gameEventId:String, playerId: String, amount:Int): Int{
-        if(gameEventExists(gameEventId)) throw Exception("Event with same id already exists")
-        if(!playerAccountExists(playerId)) throw Exception("Player with this id does not exist")
+    fun depositPlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
+        if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error("Event with same id already exists")
+        if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error("Player with this id does not exist")
 
         val currentBalance = getPlayerAccountBalance(playerId)
         val newBalance = currentBalance + amount
@@ -102,6 +99,6 @@ class GameAccountDSL() {
         createGameEvent(gameEventId, playerId, timeStamp, "deposit", amount)
         updatePlayerAccountBalance(playerId, newBalance)
 
-        return newBalance
+        return AccountBalanceResponse.Success(newBalance)
     }
 }
