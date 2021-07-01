@@ -1,0 +1,4 @@
+package gameaccountdsl
+
+class AccountBalanceRequest {
+}
