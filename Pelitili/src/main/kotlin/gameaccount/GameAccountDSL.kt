@@ -20,7 +20,7 @@ class GameAccountDSL() {
         }
     }
 
-    public fun createPlayerAccount(playerId:String, playerName:String, initialBalance:Int){
+    fun createPlayerAccount(playerId:String, playerName:String, initialBalance:Int){
         if(!playerAccountExists(playerId)){
             transaction {
                 PlayerAccount.insert {
