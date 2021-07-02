@@ -45,7 +45,7 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
     private fun updatePlayerAccountBalance(playerId: String, newBalance: Int){
         transaction {
             PlayerAccount.update ({ PlayerAccount.id eq playerId }) {
-                it[PlayerAccount.accountBalance] = newBalance
+                it[accountBalance] = newBalance
             }
         }
     }
