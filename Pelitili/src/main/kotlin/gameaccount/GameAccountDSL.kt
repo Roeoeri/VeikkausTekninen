@@ -2,6 +2,7 @@ package gameaccount
 
 import model.PlayerAccount
 import model.GameEvent
+import model.ModelSettings
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
@@ -80,6 +81,7 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
         if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error(ErrorMessages.eventIdExists)
         if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error(ErrorMessages.playerIdDoesNotExist)
         if(getPlayerAccountBalance(playerId) < amount) return AccountBalanceResponse.Error(ErrorMessages.notEnoughBalance)
+        if(gameEventId.length > ModelSettings.gameEventIdLength) return AccountBalanceResponse.Error(ErrorMessages.gameEventIdTooLong)
 
         val currentBalance = getPlayerAccountBalance(playerId)
         val newBalance = currentBalance - amount
@@ -94,6 +96,7 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
     override fun depositPlayerAccount(gameEventId:String, playerId: String, amount:Long): AccountBalanceResponse{
         if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error(ErrorMessages.eventIdExists)
         if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error(ErrorMessages.playerIdDoesNotExist)
+        if(gameEventId.length > ModelSettings.gameEventIdLength) return AccountBalanceResponse.Error(ErrorMessages.gameEventIdTooLong)
 
         val currentBalance = getPlayerAccountBalance(playerId)
         val newBalance = currentBalance + amount
