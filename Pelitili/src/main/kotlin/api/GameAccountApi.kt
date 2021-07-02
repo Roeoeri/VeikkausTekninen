@@ -3,7 +3,7 @@ import gameaccount.AccountBalanceResponse
 import gameaccount.GameAccount
 import io.javalin.Javalin
 
-class GameAccountApi(val port: Int, val storage: GameAccount) {
+class GameAccountApi(private val port: Int, private val storage: GameAccount) {
 
     data class DepositOrChargeRequest(val gameEventId:String, val playerId: String, val amount: Long)
     data class ErrorResponse(val message:String)
@@ -12,7 +12,7 @@ class GameAccountApi(val port: Int, val storage: GameAccount) {
     fun startApi(){
         val app  = Javalin.create().start(port)
         app.get("/players") { ctx -> ctx.json(storage.getPlayerAccounts())}
-        
+
         app.get("/gameEvents") { ctx -> ctx.json(storage.getGameEvents())}
 
         app.post("/api/deposit"){ ctx ->

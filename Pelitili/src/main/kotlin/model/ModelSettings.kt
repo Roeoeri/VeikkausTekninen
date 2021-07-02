@@ -3,26 +3,26 @@ package model
 object ModelSettings {
 
     //PlayerAccount
-    val playerIdLength = 255
-    val playerIdName = "id"
+    const val playerIdLength = 255
+    const val playerIdName = "id"
 
-    val playerNameLength = 50
-    val playerNameName = "name"
+    const val playerNameLength = 50
+    const val playerNameName = "name"
 
-    val playerAccountBalanceName = "accountBalance"
+    const val playerAccountBalanceName = "accountBalance"
 
     //GameEvent
-    val gameEventIdLength = 255
-    val gameEventIdName = "id"
+    const val gameEventIdLength = 255
+    const val gameEventIdName = "id"
 
-    val gameEventPlayerIdName = "player_id"
+    const val gameEventPlayerIdName = "player_id"
 
-    val gameEventTimeStampName = "timestamp"
+    const val gameEventTimeStampName = "timestamp"
 
-    val gameEventTypeName = "type"
-    val gameEventTypeLength = 10
+    const val gameEventTypeName = "type"
+    const val gameEventTypeLength = 10
 
-    val gameEventAmountName = "amount"
+    const val gameEventAmountName = "amount"
 
 
 }

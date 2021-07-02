@@ -1,4 +1,6 @@
+package utils
+
 object EventTypes{
-    val charge = "charge"
-    val deposit = "deposit"
+    const val charge = "charge"
+    const val deposit = "deposit"
 }

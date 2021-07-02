@@ -10,8 +10,9 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import utils.ErrorMessages
+import utils.EventTypes
 import java.time.LocalDateTime
-import java.util.logging.LogManager
 
 internal class GameAccountDSLTest {
 
@@ -22,10 +23,10 @@ internal class GameAccountDSLTest {
     }
     val mockTimeStamper = MockTimeStamper()
 
-    val dsl = GameAccountDSL(mockTimeStamper)
-    val PLAYER_ID = "222eee"
-    val INITIAL_ACCOUNT_BALANCE: Long = 2000
-    val INITIAL_PLAYER_NAME = "Jussi"
+    private val dsl = GameAccountDSL(mockTimeStamper)
+    private val PLAYER_ID = "222eee"
+    private val INITIAL_ACCOUNT_BALANCE: Long = 2000
+    private val INITIAL_PLAYER_NAME = "Jussi"
 
     private fun clearDatabase(){
         transaction {
@@ -61,28 +62,24 @@ internal class GameAccountDSLTest {
     @DisplayName("DSL creates player account")
     @Test
     fun createsPlayerAccount(){
-        val playerID="222eee"
-        val name = "Jussi"
-        val initialAccountBalance: Long = 2000
 
-        dsl.createPlayerAccount(playerID,name,initialAccountBalance)
-        val foundPlayer = getPlayerAccount(playerID)
+        addTestPlayerAccount()
+        val foundPlayer = getPlayerAccount(PLAYER_ID)
 
-        assertEquals(playerID,foundPlayer[PlayerAccount.id])
-        assertEquals(name,foundPlayer[PlayerAccount.name])
-        assertEquals(initialAccountBalance,foundPlayer[PlayerAccount.accountBalance])
+        assertEquals(PLAYER_ID,foundPlayer[PlayerAccount.id])
+        assertEquals(INITIAL_PLAYER_NAME,foundPlayer[PlayerAccount.name])
+        assertEquals(INITIAL_ACCOUNT_BALANCE,foundPlayer[PlayerAccount.accountBalance])
     }
 
     @DisplayName("DSL does not create multiple accounts with same playerId")
     @Test
     fun doesNotCreateDuplicates(){
         addTestPlayerAccount()
-        val playerID="222eee"
         val name = "Pekka"
         val initialAccountBalance: Long = 3000
-        dsl.createPlayerAccount(playerID,name,initialAccountBalance)
+        dsl.createPlayerAccount(PLAYER_ID,name,initialAccountBalance)
 
-        assertEquals(1, getNumberOfPlayerAccountsWithId(playerID))
+        assertEquals(1, getNumberOfPlayerAccountsWithId(PLAYER_ID))
     }
 
     @DisplayName("Charging player account twice with same gameEventID returns an error on second charge")

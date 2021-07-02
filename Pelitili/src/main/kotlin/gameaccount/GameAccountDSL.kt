@@ -5,9 +5,9 @@ import model.GameEvent
 import model.ModelSettings
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.Instant
+import utils.ErrorMessages
+import utils.EventTypes
 import java.time.LocalDateTime
-import java.util.*
 
 class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
 
