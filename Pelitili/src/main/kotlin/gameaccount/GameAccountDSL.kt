@@ -21,7 +21,7 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
         }
     }
 
-    fun createPlayerAccount(playerId:String, playerName:String, initialBalance:Int){
+    fun createPlayerAccount(playerId:String, playerName:String, initialBalance:Long){
         if(!playerAccountExists(playerId)){
             transaction {
                 PlayerAccount.insert {
@@ -33,7 +33,7 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
         }
     }
 
-    private fun createGameEvent(eventId:String, eventPlayerId: String, eventTimeStamp:LocalDateTime, eventType:String, eventAmount: Int){
+    private fun createGameEvent(eventId:String, eventPlayerId: String, eventTimeStamp:LocalDateTime, eventType:String, eventAmount: Long){
         transaction {
             GameEvent.insert {
                 it[id]=eventId
@@ -45,7 +45,7 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
         }
     }
 
-    private fun updatePlayerAccountBalance(playerId: String, newBalance: Int){
+    private fun updatePlayerAccountBalance(playerId: String, newBalance: Long){
         transaction {
             PlayerAccount.update ({ PlayerAccount.id eq playerId }) {
                 it[accountBalance] = newBalance
@@ -70,13 +70,13 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
         return true
     }
 
-    private fun getPlayerAccountBalance(playerId: String): Int {
+    private fun getPlayerAccountBalance(playerId: String): Long {
             return transaction {
                 PlayerAccount.select {PlayerAccount.id eq playerId}.single()[PlayerAccount.accountBalance]
             }
     }
 
-    override fun chargePlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
+    override fun chargePlayerAccount(gameEventId:String, playerId: String, amount:Long): AccountBalanceResponse{
         if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error(ErrorMessages.eventIdExists)
         if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error(ErrorMessages.playerIdDoesNotExist)
         if(getPlayerAccountBalance(playerId) < amount) return AccountBalanceResponse.Error(ErrorMessages.notEnoughBalance)
@@ -91,7 +91,7 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
         return AccountBalanceResponse.Success(newBalance)
     }
 
-    override fun depositPlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
+    override fun depositPlayerAccount(gameEventId:String, playerId: String, amount:Long): AccountBalanceResponse{
         if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error(ErrorMessages.eventIdExists)
         if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error(ErrorMessages.playerIdDoesNotExist)
 

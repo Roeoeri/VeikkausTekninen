@@ -5,9 +5,9 @@ import io.javalin.Javalin
 
 class GameAccountApi(val port: Int, val storage: GameAccount) {
 
-    data class DepositOrChargeRequest(val gameEventId:String, val playerId: String, val amount: Int)
+    data class DepositOrChargeRequest(val gameEventId:String, val playerId: String, val amount: Long)
     data class ErrorResponse(val message:String)
-    data class SuccessResponse(val balance:Int)
+    data class SuccessResponse(val balance:Long)
 
     fun startApi(){
         val app  = Javalin.create().start(port)

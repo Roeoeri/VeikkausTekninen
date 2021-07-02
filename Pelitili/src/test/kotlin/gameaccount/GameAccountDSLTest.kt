@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import java.util.logging.LogManager
 
 internal class GameAccountDSLTest {
 
@@ -23,7 +24,7 @@ internal class GameAccountDSLTest {
 
     val dsl = GameAccountDSL(mockTimeStamper)
     val PLAYER_ID = "222eee"
-    val INITIAL_ACCOUNT_BALANCE = 2000
+    val INITIAL_ACCOUNT_BALANCE: Long = 2000
     val INITIAL_PLAYER_NAME = "Jussi"
 
     private fun clearDatabase(){
@@ -62,7 +63,7 @@ internal class GameAccountDSLTest {
     fun createsPlayerAccount(){
         val playerID="222eee"
         val name = "Jussi"
-        val initialAccountBalance = 2000
+        val initialAccountBalance: Long = 2000
 
         dsl.createPlayerAccount(playerID,name,initialAccountBalance)
         val foundPlayer = getPlayerAccount(playerID)
@@ -78,7 +79,7 @@ internal class GameAccountDSLTest {
         addTestPlayerAccount()
         val playerID="222eee"
         val name = "Pekka"
-        val initialAccountBalance = 3000
+        val initialAccountBalance: Long = 3000
         dsl.createPlayerAccount(playerID,name,initialAccountBalance)
 
         assertEquals(1, getNumberOfPlayerAccountsWithId(playerID))
@@ -90,7 +91,7 @@ internal class GameAccountDSLTest {
         addTestPlayerAccount()
 
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount:Long = 1000
 
         dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
 
@@ -109,7 +110,7 @@ internal class GameAccountDSLTest {
         addTestPlayerAccount()
 
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount:Long = 1000
 
         dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
         dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
@@ -123,7 +124,7 @@ internal class GameAccountDSLTest {
     @Test
     fun chargingNonexistentPlayer(){
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount:Long = 1000
         val nonexistentPlayerID = "peli200"
         val res = dsl.chargePlayerAccount(gameEventId,nonexistentPlayerID,amount)
 
@@ -140,7 +141,7 @@ internal class GameAccountDSLTest {
     @Test
     fun chargingNonexistentPlayerDoesNotCreateGameEvent(){
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount:Long = 1000
         val nonexistentPlayerID = "peli200"
         dsl.chargePlayerAccount(gameEventId,nonexistentPlayerID,amount)
 
@@ -153,7 +154,7 @@ internal class GameAccountDSLTest {
     fun chargingTooMuchReturnsError(){
         addTestPlayerAccount()
         val gameEventId = "peli13"
-        val amount = 3000
+        val amount:Long = 3000
         val res = dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
 
         val expectedErrorMessage = ErrorMessages.notEnoughBalance
@@ -170,7 +171,7 @@ internal class GameAccountDSLTest {
     fun chargingTooMuchDoesNotAlterBalancer(){
         addTestPlayerAccount()
         val gameEventId = "peli13"
-        val amount = 3000
+        val amount:Long = 3000
         dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
 
         val accountBalance = getPlayerAccount(PLAYER_ID)[PlayerAccount.accountBalance]
@@ -186,7 +187,7 @@ internal class GameAccountDSLTest {
     fun chargingTooMuchDoesNotCreateGameEvent(){
         addTestPlayerAccount()
         val gameEventId = "peli13"
-        val amount = 3000
+        val amount:Long = 3000
         dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
 
         val numberOfGameEventsWithThisId = getNumberOFGameEventsWithID(gameEventId)
@@ -200,7 +201,7 @@ internal class GameAccountDSLTest {
     fun chargingPlayerAccountWithEnoughBalanceSucceeds(){
         addTestPlayerAccount()
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount: Long  = 1000
         val res = dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
 
         val expectedAccountBalance = INITIAL_ACCOUNT_BALANCE - amount
@@ -220,7 +221,7 @@ internal class GameAccountDSLTest {
     fun chargingPlayerAccountWithEnoughBalanceCreatesGameEvent(){
         addTestPlayerAccount()
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount:Long = 1000
 
         val timeStamp = mockTimeStamper.getTimeStamp()
         dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
@@ -238,7 +239,7 @@ internal class GameAccountDSLTest {
     @Test
     fun depositingToNonexistentPlayer(){
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount:Long = 1000
         val nonexistentPlayerID = "peli200"
         val res = dsl.depositPlayerAccount(gameEventId,nonexistentPlayerID,amount)
 
@@ -255,7 +256,7 @@ internal class GameAccountDSLTest {
     @Test
     fun depositingToNonexistentPlayerDoesNotCreateGameEvent(){
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount:Long = 1000
         val nonexistentPlayerID = "peli200"
         dsl.depositPlayerAccount(gameEventId,nonexistentPlayerID,amount)
 
@@ -269,7 +270,7 @@ internal class GameAccountDSLTest {
         addTestPlayerAccount()
 
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount: Long = 1000
 
         dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
 
@@ -288,7 +289,7 @@ internal class GameAccountDSLTest {
         addTestPlayerAccount()
 
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount: Long = 1000
 
         dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
         dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
@@ -303,7 +304,7 @@ internal class GameAccountDSLTest {
     fun depositingSuccees(){
         addTestPlayerAccount()
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount: Long = 1000
         val res = dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
 
         val expectedAccountBalance = INITIAL_ACCOUNT_BALANCE + amount
@@ -323,7 +324,7 @@ internal class GameAccountDSLTest {
     fun depositingCreatesCorrectGameEvent(){
         addTestPlayerAccount()
         val gameEventId = "peli13"
-        val amount = 1000
+        val amount: Long = 1000
 
         val timeStamp = mockTimeStamper.getTimeStamp()
         dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
