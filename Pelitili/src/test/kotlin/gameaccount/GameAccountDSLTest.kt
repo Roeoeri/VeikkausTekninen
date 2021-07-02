@@ -121,7 +121,6 @@ internal class GameAccountDSLTest {
     @DisplayName("Charging nonexistent playeraccount returns correct error")
     @Test
     fun chargingNonexistentPlayer(){
-        addTestPlayerAccount()
         val gameEventId = "peli13"
         val amount = 1000
         val nonexistentPlayerID = "peli200"
@@ -133,6 +132,18 @@ internal class GameAccountDSLTest {
             is AccountBalanceResponse.Success -> assertFalse(true)
             is AccountBalanceResponse.Error -> assertEquals(res.errorMessage, expectedErrorMessage)
         }
+
+    }
+
+    @DisplayName("Charging nonexistent playeraccount does not create GameEvent")
+    @Test
+    fun chargingNonexistentPlayerDoesNotCreateGameEvent(){
+        val gameEventId = "peli13"
+        val amount = 1000
+        val nonexistentPlayerID = "peli200"
+        dsl.chargePlayerAccount(gameEventId,nonexistentPlayerID,amount)
+
+        assertEquals(0,getNumberOFGameEventsWithID(gameEventId))
 
     }
 
@@ -210,13 +221,119 @@ internal class GameAccountDSLTest {
         val gameEventId = "peli13"
         val amount = 1000
 
-        val timeStamp = LocalDateTime.now().toString()
+        val timeStamp = mockTimeStamper.getTimeStamp()
         dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
 
         val gameEvent = getGameEvent(gameEventId)
 
         assertEquals(timeStamp, gameEvent[GameEvent.timestamp])
+        assertEquals(gameEventId, gameEvent[GameEvent.id])
+        assertEquals(PLAYER_ID, gameEvent[GameEvent.playerId])
+        assertEquals("charge", gameEvent[GameEvent.type])
+        assertEquals(amount, gameEvent[GameEvent.amount])
+    }
 
+    @DisplayName("Depositing to nonexistent playeraccount returns correct error")
+    @Test
+    fun depositingToNonexistentPlayer(){
+        val gameEventId = "peli13"
+        val amount = 1000
+        val nonexistentPlayerID = "peli200"
+        val res = dsl.depositPlayerAccount(gameEventId,nonexistentPlayerID,amount)
+
+        val expectedErrorMessage = "Player with this id does not exist"
+
+        when(res){
+            is AccountBalanceResponse.Success -> assertFalse(true)
+            is AccountBalanceResponse.Error -> assertEquals(res.errorMessage, expectedErrorMessage)
+        }
+
+    }
+
+    @DisplayName("Depositing to nonexistent playeraccount does not create GameEvent")
+    @Test
+    fun depositingToNonexistentPlayerDoesNotCreateGameEvent(){
+        val gameEventId = "peli13"
+        val amount = 1000
+        val nonexistentPlayerID = "peli200"
+        dsl.depositPlayerAccount(gameEventId,nonexistentPlayerID,amount)
+
+        assertEquals(0,getNumberOFGameEventsWithID(gameEventId))
+
+    }
+
+    @DisplayName("Depositing to player account twice with same gameEventID returns an error on second charge")
+    @Test
+    fun returnsErrorWhenDepositedTwice(){
+        addTestPlayerAccount()
+
+        val gameEventId = "peli13"
+        val amount = 1000
+
+        dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
+
+        val secondRes = dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
+        val expectedErrorMessage = "Event with same id already exists"
+
+        when(secondRes) {
+            is AccountBalanceResponse.Success -> assertFalse(true)
+            is AccountBalanceResponse.Error -> assertEquals(secondRes.errorMessage, expectedErrorMessage)
+        }
+    }
+
+    @DisplayName("Depositing player account twice with same gameEventID adds only the first payment to account balance")
+    @Test
+    fun doesNotAddBalanceTwice(){
+        addTestPlayerAccount()
+
+        val gameEventId = "peli13"
+        val amount = 1000
+
+        dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
+        dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
+
+        val accountBalance = getPlayerAccount(PLAYER_ID)[PlayerAccount.accountBalance]
+        val expectedBalance = INITIAL_ACCOUNT_BALANCE + amount
+        assertEquals(expectedBalance, accountBalance)
+    }
+
+    @DisplayName("Depositing to playeraccount succeeds")
+    @Test
+    fun depositingSuccees(){
+        addTestPlayerAccount()
+        val gameEventId = "peli13"
+        val amount = 1000
+        val res = dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
+
+        val expectedAccountBalance = INITIAL_ACCOUNT_BALANCE + amount
+
+        val accountBalance = getPlayerAccount(PLAYER_ID)[PlayerAccount.accountBalance]
+        assertEquals(expectedAccountBalance, accountBalance)
+
+        when(res){
+            is AccountBalanceResponse.Error -> assertFalse(true)
+            is AccountBalanceResponse.Success -> assertEquals(expectedAccountBalance, res.balance)
+
+        }
+    }
+
+    @DisplayName("Depositing to playeraccount created correct gameEvent")
+    @Test
+    fun depositingCreatesCorrectGameEvent(){
+        addTestPlayerAccount()
+        val gameEventId = "peli13"
+        val amount = 1000
+
+        val timeStamp = mockTimeStamper.getTimeStamp()
+        dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
+
+        val gameEvent = getGameEvent(gameEventId)
+
+        assertEquals(timeStamp, gameEvent[GameEvent.timestamp])
+        assertEquals(gameEventId, gameEvent[GameEvent.id])
+        assertEquals(PLAYER_ID, gameEvent[GameEvent.playerId])
+        assertEquals("deposit", gameEvent[GameEvent.type])
+        assertEquals(amount, gameEvent[GameEvent.amount])
     }
 
 
