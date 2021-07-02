@@ -1,12 +1,13 @@
-import gameaccountdsl.GameAccountDSL
+import api.GameAccountApi
+import gameaccount.GameAccountDSL
+import gameaccount.LocalStamper
 
 
 fun main(args: Array<String>) {
-    val dsl=GameAccountDSL()
 
-    val event1 = dsl.depositPlayerAccount("peli1", "11qqq", 200)
-    val event2 = dsl.chargePlayerAccount("peli2", "222EEE", 1000)
+    val stamper = LocalStamper()
+    val storage = GameAccountDSL(stamper)
+    val api = GameAccountApi(3000, storage)
+    api.startApi()
 
-    println(event1)
-    println(event2)
 }
