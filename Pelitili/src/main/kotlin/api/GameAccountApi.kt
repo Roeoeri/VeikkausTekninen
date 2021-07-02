@@ -11,9 +11,8 @@ class GameAccountApi(val port: Int, val storage: GameAccount) {
 
     fun startApi(){
         val app  = Javalin.create().start(port)
-        app.get("/players") { ctx ->
-            println("Asd")
-            ctx.json(storage.getPlayerAccounts())}
+        app.get("/players") { ctx -> ctx.json(storage.getPlayerAccounts())}
+        
         app.get("/gameEvents") { ctx -> ctx.json(storage.getGameEvents())}
 
         app.post("/api/deposit"){ ctx ->
