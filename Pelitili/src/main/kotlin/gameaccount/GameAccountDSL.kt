@@ -104,4 +104,26 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
 
         return AccountBalanceResponse.Success(newBalance)
     }
+
+    override fun getPlayerAccounts(): List<String>{
+        val list = mutableListOf<String>()
+        transaction {
+            for(player in PlayerAccount.selectAll()){
+                list.add(player.toString())
+            }
+        }
+
+        return list
+    }
+
+    override fun getGameEvents(): List<String>{
+        val list = mutableListOf<String>()
+        transaction {
+           for(event in GameEvent.selectAll()){
+               list.add(event.toString())
+           }
+        }
+        return list
+    }
+
 }
