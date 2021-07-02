@@ -4,6 +4,9 @@ import model.PlayerAccount
 import model.GameEvent
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.*
 
 class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
 
@@ -30,12 +33,12 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
         }
     }
 
-    private fun createGameEvent(eventId:String, eventPlayerId: String, eventTimeStamp:String, eventType:String, eventAmount: Int){
+    private fun createGameEvent(eventId:String, eventPlayerId: String, eventTimeStamp:LocalDateTime, eventType:String, eventAmount: Int){
         transaction {
             GameEvent.insert {
                 it[id]=eventId
                 it[playerId]=eventPlayerId
-                it[timestamp]=eventTimeStamp
+                it[timestamp]= eventTimeStamp
                 it[type]=eventType
                 it[amount]=eventAmount
             }

@@ -10,12 +10,13 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 internal class GameAccountDSLTest {
 
     class MockTimeStamper: TimeStamper {
-        override fun getTimeStamp(): String {
-            return "10.8.2021:13.46"
+        override fun getTimeStamp(): LocalDateTime {
+            return LocalDateTime.parse("2007-12-03T10:15:30")
         }
     }
     val mockTimeStamper = MockTimeStamper()
