@@ -94,7 +94,7 @@ internal class GameAccountDSLTest {
         dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
 
         val secondRes = dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
-        val expectedErrorMessage = "Event with same id already exists"
+        val expectedErrorMessage = ErrorMessages.eventIdExists
 
         when(secondRes) {
             is AccountBalanceResponse.Success -> assertFalse(true)
@@ -126,7 +126,7 @@ internal class GameAccountDSLTest {
         val nonexistentPlayerID = "peli200"
         val res = dsl.chargePlayerAccount(gameEventId,nonexistentPlayerID,amount)
 
-        val expectedErrorMessage = "Player with this id does not exist"
+        val expectedErrorMessage = ErrorMessages.playerIdDoesNotExist
 
         when(res){
             is AccountBalanceResponse.Success -> assertFalse(true)
@@ -155,7 +155,7 @@ internal class GameAccountDSLTest {
         val amount = 3000
         val res = dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
 
-        val expectedErrorMessage = "Account does not have enough balance to complete transaction"
+        val expectedErrorMessage = ErrorMessages.notEnoughBalance
 
         when(res){
             is AccountBalanceResponse.Success -> assertFalse(true)
@@ -229,7 +229,7 @@ internal class GameAccountDSLTest {
         assertEquals(timeStamp, gameEvent[GameEvent.timestamp])
         assertEquals(gameEventId, gameEvent[GameEvent.id])
         assertEquals(PLAYER_ID, gameEvent[GameEvent.playerId])
-        assertEquals("charge", gameEvent[GameEvent.type])
+        assertEquals(EventTypes.charge, gameEvent[GameEvent.type])
         assertEquals(amount, gameEvent[GameEvent.amount])
     }
 
@@ -241,7 +241,7 @@ internal class GameAccountDSLTest {
         val nonexistentPlayerID = "peli200"
         val res = dsl.depositPlayerAccount(gameEventId,nonexistentPlayerID,amount)
 
-        val expectedErrorMessage = "Player with this id does not exist"
+        val expectedErrorMessage = ErrorMessages.playerIdDoesNotExist
 
         when(res){
             is AccountBalanceResponse.Success -> assertFalse(true)
@@ -273,7 +273,7 @@ internal class GameAccountDSLTest {
         dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
 
         val secondRes = dsl.depositPlayerAccount(gameEventId,PLAYER_ID,amount)
-        val expectedErrorMessage = "Event with same id already exists"
+        val expectedErrorMessage = ErrorMessages.eventIdExists
 
         when(secondRes) {
             is AccountBalanceResponse.Success -> assertFalse(true)
@@ -332,7 +332,7 @@ internal class GameAccountDSLTest {
         assertEquals(timeStamp, gameEvent[GameEvent.timestamp])
         assertEquals(gameEventId, gameEvent[GameEvent.id])
         assertEquals(PLAYER_ID, gameEvent[GameEvent.playerId])
-        assertEquals("deposit", gameEvent[GameEvent.type])
+        assertEquals(EventTypes.deposit, gameEvent[GameEvent.type])
         assertEquals(amount, gameEvent[GameEvent.amount])
     }
 

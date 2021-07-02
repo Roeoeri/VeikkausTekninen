@@ -74,29 +74,29 @@ class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
     }
 
     override fun chargePlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
-        if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error("Event with same id already exists")
-        if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error("Player with this id does not exist")
-        if(getPlayerAccountBalance(playerId) < amount) return AccountBalanceResponse.Error("Account does not have enough balance to complete transaction")
+        if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error(ErrorMessages.eventIdExists)
+        if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error(ErrorMessages.playerIdDoesNotExist)
+        if(getPlayerAccountBalance(playerId) < amount) return AccountBalanceResponse.Error(ErrorMessages.notEnoughBalance)
 
         val currentBalance = getPlayerAccountBalance(playerId)
         val newBalance = currentBalance - amount
         val timeStamp = timeStamper.getTimeStamp()
 
-        createGameEvent(gameEventId, playerId, timeStamp, "charge", amount)
+        createGameEvent(gameEventId, playerId, timeStamp, EventTypes.charge, amount)
         updatePlayerAccountBalance(playerId, newBalance)
 
         return AccountBalanceResponse.Success(newBalance)
     }
 
     override fun depositPlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
-        if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error("Event with same id already exists")
-        if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error("Player with this id does not exist")
+        if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error(ErrorMessages.eventIdExists)
+        if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error(ErrorMessages.playerIdDoesNotExist)
 
         val currentBalance = getPlayerAccountBalance(playerId)
         val newBalance = currentBalance + amount
         val timeStamp = timeStamper.getTimeStamp()
 
-        createGameEvent(gameEventId, playerId, timeStamp, "deposit", amount)
+        createGameEvent(gameEventId, playerId, timeStamp, EventTypes.deposit, amount)
         updatePlayerAccountBalance(playerId, newBalance)
 
         return AccountBalanceResponse.Success(newBalance)
