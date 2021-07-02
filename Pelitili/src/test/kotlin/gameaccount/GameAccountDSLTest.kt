@@ -1,21 +1,26 @@
-package gameaccountdsl
+package gameaccount
 
 import model.GameEvent
 import model.PlayerAccount
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.notExists
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 internal class GameAccountDSLTest {
 
-    val dsl = GameAccountDSL()
+    class MockTimeStamper: TimeStamper {
+        override fun getTimeStamp(): String {
+            return "10.8.2021:13.46"
+        }
+    }
+    val mockTimeStamper = MockTimeStamper()
+
+    val dsl = GameAccountDSL(mockTimeStamper)
     val PLAYER_ID = "222eee"
     val INITIAL_ACCOUNT_BALANCE = 2000
     val INITIAL_PLAYER_NAME = "Jussi"

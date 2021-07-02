@@ -1,13 +1,11 @@
-package gameaccountdsl
+package gameaccount
 
 import model.PlayerAccount
 import model.GameEvent
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.lang.Exception
-import java.time.LocalDateTime
 
-class GameAccountDSL() {
+class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
 
     init{
         Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver", user = "root", password = "")
@@ -75,14 +73,14 @@ class GameAccountDSL() {
             }
     }
 
-    fun chargePlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
+    override fun chargePlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
         if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error("Event with same id already exists")
         if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error("Player with this id does not exist")
         if(getPlayerAccountBalance(playerId) < amount) return AccountBalanceResponse.Error("Account does not have enough balance to complete transaction")
 
         val currentBalance = getPlayerAccountBalance(playerId)
         val newBalance = currentBalance - amount
-        val timeStamp = LocalDateTime.now().toString()
+        val timeStamp = timeStamper.getTimeStamp()
 
         createGameEvent(gameEventId, playerId, timeStamp, "charge", amount)
         updatePlayerAccountBalance(playerId, newBalance)
@@ -90,13 +88,13 @@ class GameAccountDSL() {
         return AccountBalanceResponse.Success(newBalance)
     }
 
-    fun depositPlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
+    override fun depositPlayerAccount(gameEventId:String, playerId: String, amount:Int): AccountBalanceResponse{
         if(gameEventExists(gameEventId)) return AccountBalanceResponse.Error("Event with same id already exists")
         if(!playerAccountExists(playerId)) return  AccountBalanceResponse.Error("Player with this id does not exist")
 
         val currentBalance = getPlayerAccountBalance(playerId)
         val newBalance = currentBalance + amount
-        val timeStamp = LocalDateTime.now().toString()
+        val timeStamp = timeStamper.getTimeStamp()
 
         createGameEvent(gameEventId, playerId, timeStamp, "deposit", amount)
         updatePlayerAccountBalance(playerId, newBalance)
