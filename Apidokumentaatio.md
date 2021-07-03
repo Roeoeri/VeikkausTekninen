@@ -1,0 +1,59 @@
+# API Dokumentaatio
+
+## GET /players
+(Esim https://pelitilidemo.herokuapp.com/players)
+Palauttaa tietokantaan tallennetut pelitilit JSON listana. Endpoint on puhtaasti demoa varten, joten se ei ole polun /api/ takana.
+
+## GET /gameEvents
+https://pelitilidemo.herokuapp.com/gameEvents
+Palauttaa tietokantaan tallennetut pelitapahtumat JSON listana. Endpoint on puhtaasti demoa varten, joten se ei ole polun /api/ takana.
+
+## POST /api/deposit 
+
+EndPoint voiton maksamista varten. Olettaa, että sille lähetetyssä pyynnössä on rungossa JSON muotoa:
+
+```
+{
+    "gameEventId": String,   // Pelitapahtuman tunniste. Merkkijono, korkeintaan 255 merkkiä. Samalla tunnisteella ei saa olla toista tapahtumaa.
+    "playerId": String,      // Pelaajan tunniste. Merkkijono, korkeintaan 255 merkkiä. Pelaajalla täytyy olla pelitili.
+    "amount": Number         // Summa sentteinä.
+    
+}    
+```
+
+Jos rungossa oleva JSON on oikean muotoinen, endpoint palauttaa koodin 200 ja JSON:nin muota 
+```
+{
+  "balance": Number //Pelaajan pelitilin uusi saldo tapahtuman jälkeen.
+)
+```
+
+Muussa tapauksessa palautetaan [Javalinin](https://www.google.com) BadRequest, eli koodi 400 ja otsikko, joka sisältää virheviestin.
+
+
+##  POST /api/charge
+
+EndPoint veloitusta varten. Olettaa, että sille lähetetyssä pyynnössä on rungossa JSON muotoa:
+```
+{
+    "gameEventId": String,   // Pelitapahtuman tunniste. Merkkijono, korkeintaan 255 merkkiä. Samalla tunnisteella ei saa olla toista tapahtumaa.
+    "playerId": String,      // Pelaajan tunniste. Merkkijono, korkeintaan 255 merkkiä. Pelaajalla täytyy olla pelitili.
+    "amount": Number         // Summa sentteinä.
+    
+}    
+```
+
+Jos rungossa oleva JSON on oikean muotoinen, endpoint palauttaa koodin 200 ja JSON:nin muota 
+```
+{
+  "balance": Number //Pelaajan pelitilin uusi saldo tapahtuman jälkeen.
+)
+```
+
+Muussa tapauksessa palautetaan [Javalinin](https://www.google.com) BadRequest, eli koodi 400 ja otsikko, joka sisältää virheviestin.
+
+
+
+
+
+
