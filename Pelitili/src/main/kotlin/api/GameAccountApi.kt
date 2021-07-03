@@ -38,7 +38,7 @@ class GameAccountApi(private val port: Int, private val storage: GameAccount) {
         app.post("/api/charge") { ctx ->
             val params = ctx.bodyValidator<DepositOrChargeRequest>().get()
             val transactionEvent = storage.chargePlayerAccount(params.gameEventId, params.playerId, params.amount)
-            handleTransActionEvent(transactionEvent, ctx)
+            handleTransActionEvent(transactionEvent,ctx)
         }
     }
 }
