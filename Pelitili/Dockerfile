@@ -5,5 +5,6 @@ RUN mvn -f /usr/src/app/pom.xml clean package
 
 FROM openjdk:11  
 COPY --from=build /usr/src/app/target/consoleApp-1.0-SNAPSHOT-jar-with-dependencies.jar  /usr/app/app.jar  
+EXPOSE 80
 EXPOSE 3000  
 ENTRYPOINT ["java","-jar","/usr/app/app.jar"]  
