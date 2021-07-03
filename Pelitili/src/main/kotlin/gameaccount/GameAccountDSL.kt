@@ -12,14 +12,40 @@ import java.time.LocalDateTime
 class GameAccountDSL(private val timeStamper: TimeStamper): GameAccount {
 
     init{
-        Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver", user = "root", password = "")
-        initTables()
+        //if there is Database url, assume it is to Heroku postgress and try to connect
+        when(System.getenv("DATABASE_URL")) {
+            is String -> {
+                val key = System.getenv("DATABASE_URL")
+
+                val uri = "jdbc:postgresql://${key.split(("@"))[1]}"
+                val credential = key.split("@")[0].removePrefix("postgres://")
+
+                val username = credential.split(":")[0]
+                val password = credential.split(":")[1]
+
+                Database.connect(uri, "org.postgresql.Driver", username, password)
+                initTablesInProduction()
+
+            }
+            else -> {
+                Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver", user = "root", password = "")
+                initTables()
+            }
+        }
     }
 
     private fun initTables(){
         transaction {
             SchemaUtils.create (PlayerAccount, GameEvent)
         }
+    }
+
+    private fun initTablesInProduction(){
+
+        transaction {
+            SchemaUtils.createMissingTablesAndColumns (PlayerAccount, GameEvent)
+        }
+
     }
 
     fun createPlayerAccount(playerId:String, playerName:String, initialBalance:Long){
