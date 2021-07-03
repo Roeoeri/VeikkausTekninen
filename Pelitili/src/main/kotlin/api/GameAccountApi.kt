@@ -2,6 +2,7 @@ package api
 import gameaccount.AccountBalanceResponse
 import gameaccount.GameAccount
 import io.javalin.Javalin
+import utils.ErrorMessages
 
 class GameAccountApi(private val port: Int, private val storage: GameAccount) {
 
@@ -16,7 +17,13 @@ class GameAccountApi(private val port: Int, private val storage: GameAccount) {
         app.get("/gameEvents") { ctx -> ctx.json(storage.getGameEvents())}
 
         app.post("/api/deposit"){ ctx ->
-            val params = ctx.body<DepositOrChargeRequest>()
+            val request = ctx.bodyValidator<DepositOrChargeRequest>()
+            if (request.hasError()) {
+                ctx.status(400)
+                ctx.json(ErrorResponse(ErrorMessages.malformatedParameters))
+            }
+
+            val params = request.get()
             when(val transactionEvent = storage.depositPlayerAccount(params.gameEventId, params.playerId, params.amount)){
                 is AccountBalanceResponse.Error -> {
                     ctx.status(400)
@@ -31,12 +38,17 @@ class GameAccountApi(private val port: Int, private val storage: GameAccount) {
         }
 
         app.post("/api/charge"){ ctx ->
-            val params = ctx.body<DepositOrChargeRequest>()
+            val request = ctx.bodyValidator<DepositOrChargeRequest>()
+            if (request.hasError()) {
+                ctx.status(400)
+                ctx.json(ErrorResponse(ErrorMessages.malformatedParameters))
+            }
+
+            val params = request.get()
             when(val transactionEvent = storage.chargePlayerAccount(params.gameEventId, params.playerId, params.amount)){
                 is AccountBalanceResponse.Error -> {
                     ctx.status(400)
                     ctx.json(ErrorResponse(transactionEvent.errorMessage))
-
                 }
                 is AccountBalanceResponse.Success -> {
                     ctx.status(200)
@@ -44,7 +56,5 @@ class GameAccountApi(private val port: Int, private val storage: GameAccount) {
                 }
             }
         }
-
     }
-
 }
