@@ -2,13 +2,18 @@
 
 ## GET /players
 (Esim https://pelitilidemo.herokuapp.com/players)
+
+
 Palauttaa tietokantaan tallennetut pelitilit JSON listana. Endpoint on puhtaasti demoa varten, joten se ei ole polun /api/ takana.
 
 ## GET /gameEvents
-https://pelitilidemo.herokuapp.com/gameEvents
+(Esim https://pelitilidemo.herokuapp.com/gameEvents)
+
+
 Palauttaa tietokantaan tallennetut pelitapahtumat JSON listana. Endpoint on puhtaasti demoa varten, joten se ei ole polun /api/ takana.
 
 ## POST /api/deposit 
+(Esim https://pelitilidemo.herokuapp.com/api/deposit)
 
 EndPoint voiton maksamista varten. Olettaa, että sille lähetetyssä pyynnössä on rungossa JSON muotoa:
 
@@ -32,6 +37,7 @@ Muussa tapauksessa palautetaan [Javalinin](https://www.google.com) BadRequest, e
 
 
 ##  POST /api/charge
+(Esim https://pelitilidemo.herokuapp.com/api/charge)
 
 EndPoint veloitusta varten. Olettaa, että sille lähetetyssä pyynnössä on rungossa JSON muotoa:
 ```
