@@ -3,7 +3,7 @@ import gameaccount.GameAccountDSL
 import gameaccount.LocalStamper
 
 
-fun main(args: Array<String>) {
+fun main() {
 
     val stamper = LocalStamper()
     val storage = GameAccountDSL(stamper)
