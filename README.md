@@ -1,9 +1,9 @@
-# KoodiTehtävä
+# Kooditehtävä
 
 ## Käyttöohjeet
 
 ### Pelitilin ajaminen
-Pelitiliä pääsee testikäyttämään osoitteesta: https://pelitilidemo.herokuapp.com/. API-kuvaus löytyy täältä. Jos pelitiliä haluaa ajaa lokaalisti, voi toimia näin:
+Pelitiliä pääsee testikäyttämään osoitteesta: https://pelitilidemo.herokuapp.com/. API-kuvaus löytyy [täältä](https://github.com/Roeoeri/VeikkausTekninen/blob/main/Apidokumentaatio.md). Jos pelitiliä haluaa ajaa lokaalisti, voi toimia näin:
 
 1. Jos sinulla ei ole Mavenia, asenna se (https://maven.apache.org)
 2. Navigoi komentorivillä kansioon, johon haluat pelitilin ladata.
@@ -11,7 +11,7 @@ Pelitiliä pääsee testikäyttämään osoitteesta: https://pelitilidemo.heroku
 4. Aja komento: `cd VeikkausTekninen/Pelitili` 
 5. Aja komento: `mvn clean compile exec:java`
 6. Pelitili on käytettävissä osoitteesta: http://localhost:3000
-7. API-kuvaus löytyy täältä
+7. API-kuvaus löytyy [täältä](https://github.com/Roeoeri/VeikkausTekninen/blob/main/Apidokumentaatio.md)
 
 ### Testien ajaminen
 
