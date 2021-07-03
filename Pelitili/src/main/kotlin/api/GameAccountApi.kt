@@ -2,12 +2,28 @@ package api
 import gameaccount.AccountBalanceResponse
 import gameaccount.GameAccount
 import io.javalin.Javalin
+import io.javalin.http.BadRequestResponse
+import io.javalin.http.Context
+import org.jetbrains.exposed.sql.transactions.transaction
+import utils.ErrorMessages
 
 class GameAccountApi(private val port: Int, private val storage: GameAccount) {
 
     data class DepositOrChargeRequest(val gameEventId:String, val playerId: String, val amount: Long)
-    data class ErrorResponse(val message:String)
     data class SuccessResponse(val balance:Long)
+
+    private fun handleTransActionEvent(transactionEvent: AccountBalanceResponse, ctx: Context) {
+
+        when(transactionEvent){
+            is AccountBalanceResponse.Error -> {
+                throw BadRequestResponse(transactionEvent.errorMessage)
+            }
+            is AccountBalanceResponse.Success -> {
+                ctx.status(200)
+                ctx.json(SuccessResponse(transactionEvent.balance))
+            }
+        }
+    }
 
     fun startApi(){
         val app  = Javalin.create().start(port)
@@ -16,35 +32,17 @@ class GameAccountApi(private val port: Int, private val storage: GameAccount) {
         app.get("/gameEvents") { ctx -> ctx.json(storage.getGameEvents())}
 
         app.post("/api/deposit"){ ctx ->
-            val params = ctx.body<DepositOrChargeRequest>()
-            when(val transactionEvent = storage.depositPlayerAccount(params.gameEventId, params.playerId, params.amount)){
-                is AccountBalanceResponse.Error -> {
-                    ctx.status(400)
-                    ctx.json(ErrorResponse(transactionEvent.errorMessage))
+            val params = ctx.bodyValidator<DepositOrChargeRequest>().get()
+            val transactionEvent = storage.depositPlayerAccount(params.gameEventId, params.playerId, params.amount)
+            handleTransActionEvent(transactionEvent,ctx)
 
-                }
-                is AccountBalanceResponse.Success -> {
-                    ctx.status(200)
-                    ctx.json(SuccessResponse(transactionEvent.balance))
-                }
-            }
         }
 
         app.post("/api/charge"){ ctx ->
-            val params = ctx.body<DepositOrChargeRequest>()
-            when(val transactionEvent = storage.chargePlayerAccount(params.gameEventId, params.playerId, params.amount)){
-                is AccountBalanceResponse.Error -> {
-                    ctx.status(400)
-                    ctx.json(ErrorResponse(transactionEvent.errorMessage))
+            val params = ctx.bodyValidator<DepositOrChargeRequest>().get()
+            val transactionEvent = storage.chargePlayerAccount(params.gameEventId, params.playerId, params.amount)
+            handleTransActionEvent(transactionEvent,ctx)
 
-                }
-                is AccountBalanceResponse.Success -> {
-                    ctx.status(200)
-                    ctx.json(SuccessResponse(transactionEvent.balance))
-                }
-            }
         }
-
     }
-
 }
