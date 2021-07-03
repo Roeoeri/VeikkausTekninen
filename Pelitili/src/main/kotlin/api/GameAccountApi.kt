@@ -4,8 +4,6 @@ import gameaccount.GameAccount
 import io.javalin.Javalin
 import io.javalin.http.BadRequestResponse
 import io.javalin.http.Context
-import org.jetbrains.exposed.sql.transactions.transaction
-import utils.ErrorMessages
 
 class GameAccountApi(private val port: Int, private val storage: GameAccount) {
 
@@ -35,14 +33,12 @@ class GameAccountApi(private val port: Int, private val storage: GameAccount) {
             val params = ctx.bodyValidator<DepositOrChargeRequest>().get()
             val transactionEvent = storage.depositPlayerAccount(params.gameEventId, params.playerId, params.amount)
             handleTransActionEvent(transactionEvent,ctx)
-
         }
 
-        app.post("/api/charge"){ ctx ->
+        app.post("/api/charge") { ctx ->
             val params = ctx.bodyValidator<DepositOrChargeRequest>().get()
             val transactionEvent = storage.chargePlayerAccount(params.gameEventId, params.playerId, params.amount)
-            handleTransActionEvent(transactionEvent,ctx)
-
+            handleTransActionEvent(transactionEvent, ctx)
         }
     }
 }
