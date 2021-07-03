@@ -113,7 +113,7 @@ internal class GameAccountDSLTest {
         dsl.chargePlayerAccount(gameEventId,PLAYER_ID,amount)
 
         val accountBalance = getPlayerAccount(PLAYER_ID)[PlayerAccount.accountBalance]
-        val expectedBalance = INITIAL_ACCOUNT_BALANCE - amount
+        val expectedBalance = INITIAL_ACCOUNT_BALANCE - 1
         assertEquals(expectedBalance, accountBalance)
     }
 
