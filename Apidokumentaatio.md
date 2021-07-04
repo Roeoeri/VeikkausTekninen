@@ -33,7 +33,7 @@ Jos rungossa oleva JSON on oikean muotoinen, endpoint palauttaa koodin 200 ja JS
 )
 ```
 
-Muussa tapauksessa palautetaan [Javalinin](https://www.google.com) BadRequest, eli koodi 400 ja otsikko, joka sisältää virheviestin.
+Muussa tapauksessa palautetaan [Javalinin](https://javalin.io/documentation) BadRequest, eli koodi 400 ja otsikko, joka sisältää virheviestin.
 
 
 ##  POST /api/charge
@@ -56,7 +56,7 @@ Jos rungossa oleva JSON on oikean muotoinen, endpoint palauttaa koodin 200 ja JS
 )
 ```
 
-Muussa tapauksessa palautetaan [Javalinin](https://www.google.com) BadRequest, eli koodi 400 ja otsikko, joka sisältää virheviestin.
+Muussa tapauksessa palautetaan [Javalinin](https://javalin.io/documentation) BadRequest, eli koodi 400 ja otsikko, joka sisältää virheviestin.
 
 
 
