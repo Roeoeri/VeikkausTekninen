@@ -29,7 +29,7 @@ EndPoint voiton maksamista varten. Olettaa, että sille lähetetyssä pyynnöss�
 Jos rungossa oleva JSON on oikean muotoinen, endpoint palauttaa koodin 200 ja JSON:nin muota 
 ```
 {
-  "balance": Number //Pelaajan pelitilin uusi saldo tapahtuman jälkeen.
+  "balance": Number //Pelaajan pelitilin uusi saldo sentteinä tapahtuman jälkeen.
 )
 ```
 
@@ -52,7 +52,7 @@ EndPoint veloitusta varten. Olettaa, että sille lähetetyssä pyynnössä on ru
 Jos rungossa oleva JSON on oikean muotoinen, endpoint palauttaa koodin 200 ja JSON:nin muota 
 ```
 {
-  "balance": Number //Pelaajan pelitilin uusi saldo tapahtuman jälkeen.
+  "balance": Number //Pelaajan pelitilin uusi saldo sentteinä tapahtuman jälkeen.
 )
 ```
 
